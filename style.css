@@ -441,28 +441,39 @@ button {
   height: 100%;
 }
 
-.content .btn {
-  width: 100%;
-  height: 58px;
-  padding-left: 20px;
+.content .add-div {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  border: 1px solid rgba(0, 0, 0, 0.055);
-  border-radius: 10px;
-  background-color: #fefefe;
+  width: 100%;
+  position: relative;
 }
 
-.content .btn h3 {
+.content .add-task {
+  height: 42px;
+  width: 75%;
+  padding-left: 30px;
+  background-color: #f6f6f7;
+  border: 1px solid rgba(0, 0, 0, 0.095);
+  border-radius: 5px;
   font-size: 16px;
-  font-family: Inter;
-  font-weight: 600;
-  color: #525252;
-  padding: 0 10px;
+  margin: 10px 10px 10px 0;
 
 }
 
-.icon {
+.add-task-btn {
+  height: 48px;
+  width: 20%;
+  padding-left: 10px;
+  background-color: #FFD33C;
+  border: 1px solid rgba(0, 0, 0, 0.095);
+  border-radius: 5px;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+/* .icon {
   display: inline-block;
   width: 3px;
   height: 3px;
@@ -473,7 +484,7 @@ button {
   background-repeat: no-repeat;
   background-size: cover;
   margin: 0 10px;
-}
+} */
 
 .content .btn:hover {
   background-color: #fbfbfb;

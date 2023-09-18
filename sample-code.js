@@ -145,3 +145,107 @@
 //     bodyContent.appendChild(div);
 //     updateTotal(menu, event);
 // };
+
+
+
+
+const viewTask = (task, btnevent, menu) => {
+
+    const selectedTaskDiv = document.getElementById("selectedTask");
+    selectedTaskDiv.innerHTML = "";
+
+    let title = event.target.innerText;
+
+    let div = document.getElementById("selectedTask");
+    div.className = "show";
+    let contentdiv = document.createElement("div");
+    contentdiv.className = "at-content";
+    div.appendChild(contentdiv);
+    let contentheader = document.createElement("div");
+    contentheader.className = "at-header";
+    contentdiv.appendChild(contentheader);
+    let h2 = document.createElement("h2");
+    h2.innerText = "Task:";
+    let close = document.createElement("i");
+    close.className = "icon-close";
+    close.addEventListener("click", () => {
+        div.className = "hide";
+    });
+    contentheader.appendChild(h2);
+    contentheader.appendChild(close);
+
+    let tasktitle = document.createElement("input");
+    tasktitle.placeholder = "Name of Task";
+    tasktitle.value = task.title;
+    tasktitle.className = "at-title";
+    contentdiv.appendChild(tasktitle);
+
+    let textarea = document.createElement("textarea");
+    textarea.rows = 5;
+    textarea.cols = 30;
+    textarea.placeholder = "Description";
+    textarea.value = task.description;
+    contentdiv.appendChild(textarea);
+
+    let ul = document.createElement("ul");
+    ul.className = "at-ul";
+    contentdiv.appendChild(ul);
+    let list = document.createElement("li");
+    list.className = "list";
+    ul.appendChild(list);
+    let h3 = document.createElement("h3");
+    h3.innerText = "List";
+    let select = document.createElement("select");
+    let defaultopt = document.createElement("option");
+    defaultopt.innerText = "Select an option";
+    defaultopt.disabled = true;
+    defaultopt.selected = true;
+    if (task.list === "") {
+        select.appendChild(defaultopt);
+    }
+    lists.forEach(list => {
+        let option = document.createElement("option");
+        option.value = list.name;
+        option.innerText = list.name;
+        select.appendChild(option);
+    });
+    list.appendChild(h3);
+    list.appendChild(select);
+
+    let duedate = document.createElement("li");
+    duedate.className = "due-date";
+    ul.appendChild(duedate);
+    let h3date = document.createElement("h3");
+    h3date.innerText = "Due Date";
+    duedate.appendChild(h3date);
+
+    let dateinput = document.createElement("input");
+    dateinput.type = "date";
+    if (task.date != "") {
+        dateinput.value = task.date;
+    }
+    duedate.appendChild(dateinput);
+
+    let frag = createSubtask(task);
+    contentdiv.appendChild(frag);
+
+    let btns = document.createElement("div");
+    btns.className = "btns";
+    let dbtn = document.createElement("button");
+    dbtn.id = "delete";
+    dbtn.innerText = "Delete";
+    let sbtn = document.createElement("button");
+    sbtn.id = "save";
+    sbtn.innerText = "Save Changes";
+    btns.appendChild(dbtn);
+    btns.appendChild(sbtn);
+    dbtn.addEventListener("click", () => {
+        removeTaskAndUpdateMenu(task, menu);
+    });
+    sbtn.addEventListener("click", (event) => {
+        const li = event.target.parentElement.parentElement; // Define li here
+        updateTaskAndAddButton(task, tasktitle, textarea, dateinput, select, menu, li);
+    });
+    div.append(btns);
+
+}

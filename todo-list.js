@@ -31,7 +31,7 @@ let lists = [
 
 //task = title,description,list,due date,tags
 const tasks = [
-    { title: "Assignments", description: "Appsdev", date: "2023-09-18", list: "", subtask: ["Appsdev Code", "Review"] }
+    { title: "Assignments", description: "Appsdev", date: "2023-09-18", list: "", subtask: ["Appsdev Code", "Review"],active:0}
 ];
 
 //remove task
@@ -81,6 +81,29 @@ function isButton(event) {
 }
 function getRandomIndex(array) {
     return Math.floor(Math.random() * array.length);
+}
+function removeTaskAndUpdateMenu(task, menu,li) {
+    li.parentElement.removeChild(li);
+    removeTaskByTitle(task.title);
+    menu.total--;
+    updateTotal(menu);
+}
+
+function updateTaskAndAddButton(task, tasktitle, textarea, dateinput, select, menu, li) {
+    task.title = tasktitle.value;
+    task.description = textarea.value;
+    task.date = dateinput.value;
+    const checklist = select.value;
+    task.list = checklist === "Select an option" ? "" : checklist;
+
+    li.innerHTML = ""; // Clear existing content
+
+    if (li.children.length === 0) {
+        const button = addingTaskElement(task, menu);
+        li.appendChild(button);
+    }
+
+    updateTotal(menu);
 }
 
 
@@ -441,44 +464,14 @@ const viewTask = (task, btnevent, menu) => {
     sbtn.innerText = "Save Changes";
     btns.appendChild(dbtn);
     btns.appendChild(sbtn);
-    dbtn.addEventListener("click", (event) => {
-        event.target.parentElement.parentElement.className = "hide";
-        event.target.parentElement.parentElement.innerHTML = "";
-
-        let mytarget = btnevent.target;
-        while (mytarget.tagName != "LI") {
-            mytarget = mytarget.parentElement;
-            console.log(mytarget);
-        }
-        mytarget.remove();
-        removeTaskByTitle(task.title);
-        menu.total--;
-        updateTotal(menu);
-        event.stopPropagation(); // Stop event propagation to prevent unintended behavior
+    const li = btnevent.target.parentElement.parentElement;
+    dbtn.addEventListener("click", () => {
+        removeTaskAndUpdateMenu(task, menu,li);
+        document.getElementById("selectedTask").className = "hide";
     });
-    sbtn.addEventListener("click", (event) => {
-        event.target.parentElement.parentElement.className = "hide";
-        event.target.parentElement.parentElement.innerHTML = "";
-        task.title = tasktitle.value;
-        task.description = textarea.value;
-        task.date = dateinput.value;
-        let checklist = select[select.selectedIndex].value;
-        if (checklist === "Select an option") {
-            task.list = "";
-        } else {
-            task.list = checklist;
-        }
-        let li = btnevent.target.parentElement.parentElement;
-        for (let i = 0; i < li.children.length; i++) {
-            console.log(li);
-            li.children[i].remove();
-        }
-        if (li.children.length === 0) {
-            let button = addingTaskElement(task, menu);
-            li.appendChild(button);
-        }
-        event.stopPropagation();
-
+    sbtn.addEventListener("click", () => {
+        updateTaskAndAddButton(task, tasktitle, textarea, dateinput, select, menu, li);
+        document.getElementById("selectedTask").className = "hide";
     });
     div.append(btns);
 
@@ -501,7 +494,7 @@ let createTitle = (body, menu) => {
     trash[0].addEventListener("click", (event) => {
         let id = document.getElementById("selectedTask");
         console.log(id);
-        if(id.className === "show"){
+        if (id.className === "show") {
             id.className = "hide";
             id.innerHTML = "";
         }
@@ -531,7 +524,7 @@ let createTitle = (body, menu) => {
             inputArr[i].parentElement.remove();
         }
 
- 
+        event.stopPropagation();
         // Update the menu.total variable.
         menu.total -= inputArr.length;
         updateTotal(menu);
@@ -544,23 +537,24 @@ let createTitle = (body, menu) => {
 let createContentTasks = (bodyContent, menu, menuevent) => {
     let div = document.createElement("div");
     div.className = "content";
-    let btn = document.createElement("button");
-    btn.className = "btn";
+    let addDiv = document.createElement("div");
+    addDiv.className = "add-div";
 
-    let i = document.createElement("i");
-    i.className = "icon";
-    let h3 = document.createElement("h3");
-    h3.innerText = "Add Task";
-    btn.appendChild(i);
-    btn.appendChild(h3);
-    div.appendChild(btn);
+    let input = document.createElement("input");
+    input.placeholder = "Add Task";
+    input.type = "text";
+    input.className = "add-task";
+
+    let button = document.createElement("button");
+    button.className = "add-task-btn";
+    button.innerText = "Add Task";
+
+    addDiv.appendChild(input);
+    addDiv.appendChild(button);
+    div.appendChild(addDiv);
 
     let ul = document.createElement("ul");
     ul.className = "task";
-    btn.addEventListener("click", (event) => {
-        addTask(event, menu);
-
-    });
     //displaying of previous task based on current day
     tasks.forEach(task => {
         let li = document.createElement("li");
@@ -570,20 +564,32 @@ let createContentTasks = (bodyContent, menu, menuevent) => {
 
     });
 
+    input.addEventListener("change", () => {
+        const taskValue = input.value.trim(); // Remove leading and trailing whitespace
+        if (taskValue !== "") {
+            const addTaskClickHandler = (event) => {
+                addTask(menu, ul, taskValue);
+                input.value = "";
+                button.removeEventListener("click", addTaskClickHandler);
+            };
 
+            button.removeEventListener("click", addTaskClickHandler);
+
+            button.addEventListener("click", addTaskClickHandler);
+        }
+    });
     div.appendChild(ul);
     bodyContent.appendChild(div);
     updateTotal(menu);
 
 }
 
-let addTask = (event, menu) => {
+let addTask = (menu, ul, taskname) => {
     const date = new Date();
     let day = date.getDate();
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
-    let ul = event.target.parentElement.children[1];
-    let newTask = { title: "New Task " + tasks.length, description: "", date: "", list: "", subtask: [] };
+    let newTask = { title: taskname, description: "", date: "", list: "", subtask: [] };
     tasks.push(newTask);
     menu.total++;
     let li = document.createElement("li");
@@ -673,7 +679,7 @@ let addingTaskElement = (task, menu) => {
 
 
 //upcoming task
-let createContentUpcoming = (bodyContent, menu,event)=>{
+let createContentUpcoming = (bodyContent, menu, event) => {
 
     let div = document.createElement("div");
     div.className = "content";
