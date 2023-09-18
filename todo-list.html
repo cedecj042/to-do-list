@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>To-Do-List</title>
+    <link rel="stylesheet" href="todo-list.css">
+</head>
+
+<body>
+    <nav>
+        <div class="menu">
+            <div class="menu-title">
+                <h2>Menu</h2>
+                <button id="menubtn"><i class="menu-icon"></i></button>
+            </div>
+            <div class="search">
+                <i class="icon-search" aria-hidden="true"></i>
+                <input type="text" placeholder="Search">
+            </div>
+            <div id="task">
+                <h3>Tasks</h3>
+            </div>
+            <div id="list">
+                <h3>List</h3>
+            </div>
+            <div id="tags">
+                <h3>Tags</h3>
+            </div>
+        </div>
+        <div class="logout">
+            <button>
+                <i class="icon-logout"></i>
+                <h5>Log-out</h5>
+            </button>
+        </div>
+    </nav>
+    <div class="add-component">
+    </div>
+    <div id="selectedMenu">
+        <div class="title hide">
+            <h1>Upcoming</h1>
+            <span>5</span>
+            <span class="icon-trash"><i></i></span>
+
+        </div>
+        <div id="body-content">
+
+        </div>
+    </div>
+    <div id="selectedTask" class="hide">
+    </div>
+    <script src="todo-list.js"></script>
+</body>
+
+</html>

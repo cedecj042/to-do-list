@@ -1,0 +1,31 @@
+{
+    "tasks": [
+      { "name": "Upcoming", "icon": "icons/forward-solid.svg" },
+      { "name": "Today", "icon": "icons/list-check-solid.svg" },
+      { "name": "Sticky Wall", "icon": "icons/note-sticky-solid.svg" }
+    ],
+    "colors": [
+      "#77dd77",
+      "#89cff0",
+      "#99c5c4",
+      "#b2fba5",
+      "#b39eb5",
+      "#bdb0d0",
+      "#c1c6fc",
+      "#cb99c9",
+      "#c6a4a4",
+      "#cef0cc",
+      "#d8a1c4",
+      "#dea5a4",
+      "#fdfd96",
+      "#f49ac2",
+      "#ffb7ce",
+      "#ca9bf7",
+      "#ff9899"
+    ],
+    "lists": [
+      { "name": "Personal", "color": "#77dd77" },
+      { "name": "School", "color": "#89cff0" },
+      { "name": "List", "color": "#99c5c4" }
+    ]
+  }
