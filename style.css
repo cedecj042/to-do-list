@@ -26,6 +26,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: start;
+  background-color: #ccd7ed;
 }
 
 nav {
@@ -381,6 +382,8 @@ button {
   display: flex;
   flex-direction: column;
   justify-content: start;
+  border-radius: 25px;
+  margin: 0 15px;
 }
 
 #body-content {
@@ -398,8 +401,9 @@ button {
   justify-content: start;
   flex-direction: row;
   align-items: center;
-  /* margin-bottom: 10px; */
+  margin-top: 10px;
   position: relative;
+  padding: 20px 20px 0 20px;
 }
 
 .title span {
@@ -416,7 +420,7 @@ button {
 
 }
 
-.title .icon-trash{
+.title .icon-trash {
   position: absolute;
   right: 0;
   background-color: #fff;
@@ -439,8 +443,9 @@ button {
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  width: 100%;
   height: 100%;
+  padding: 20px;
+  margin-top: -20px;
 }
 
 .content .add-div {
@@ -491,6 +496,7 @@ button {
   overflow-y: auto;
   scroll-behavior: smooth;
   padding: 0;
+  margin: 0 0 10px 0;
 }
 
 .task-button {
@@ -504,10 +510,11 @@ button {
   background-color: #fff;
   border: 1px solid rgba(0, 0, 0, 0.055);
   padding-left: 20px;
-  border-radius: 0;
-  border-top: 0;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  /* border-top: 0;
   border-left: 0;
-  border-right: 0;
+  border-right: 0; */
 }
 
 .task-button:hover {
@@ -716,9 +723,11 @@ button {
   padding: 0;
   padding-left: 10px;
 }
-.subtask{
+
+.subtask {
   height: 420px;
 }
+
 .subtask-title {
   display: flex;
   justify-content: space-between;
@@ -888,4 +897,67 @@ button {
   /* padding: 5px; */
   cursor: pointer;
   background-color: #ebebf0;
+}
+
+.section {
+  width: 100%;
+  background: #fff;
+  padding: 10px 20px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  /* box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.055); */
+  border: 1px solid rgba(0, 0, 0, 0.055);
+}
+
+.section h3 {
+  /* margin: 0; */
+  margin-right: 2px;
+  font-size: 16px;
+}
+
+.section-head {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 20px 0 20px;
+}
+
+
+
+.icon-expand {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  /* position: absolute; */
+  height: 24px;
+  width: 24px;
+  /* padding: 5px; */
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.down {
+  background-image: url(icons/angle-down-solid.svg);
+}
+
+.up {
+  background-image: url(icons/angle-up-solid.svg);
+}
+
+.hidden {
+  display: none;
+}
+
+.section-total {
+  position: absolute;
+  left: 115px;
+  background-color: #f4f5f7;
+  height: 35px;
+  width: 35px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

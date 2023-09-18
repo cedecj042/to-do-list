@@ -1,31 +1,36 @@
 {
-    "tasks": [
-      { "name": "Upcoming", "icon": "icons/forward-solid.svg" },
-      { "name": "Today", "icon": "icons/list-check-solid.svg" },
-      { "name": "Sticky Wall", "icon": "icons/note-sticky-solid.svg" }
-    ],
-    "colors": [
-      "#77dd77",
-      "#89cff0",
-      "#99c5c4",
-      "#b2fba5",
-      "#b39eb5",
-      "#bdb0d0",
-      "#c1c6fc",
-      "#cb99c9",
-      "#c6a4a4",
-      "#cef0cc",
-      "#d8a1c4",
-      "#dea5a4",
-      "#fdfd96",
-      "#f49ac2",
-      "#ffb7ce",
-      "#ca9bf7",
-      "#ff9899"
-    ],
-    "lists": [
-      { "name": "Personal", "color": "#77dd77" },
-      { "name": "School", "color": "#89cff0" },
-      { "name": "List", "color": "#99c5c4" }
-    ]
-  }
+  "menus": [
+    { "name": "Tasks", "icon": "icons/list-check-solid.svg", "total": 1 },
+    { "name": "Upcoming", "icon": "icons/forward-solid.svg" },
+    { "name": "Sticky Wall", "icon": "icons/note-sticky-solid.svg" }
+  ],
+  "colors": [
+    { "name": "Pastel Green", "color": "#77dd77", "used": false },
+    { "name": "Baby Blue", "color": "#89cff0", "used": false },
+    { "name": "Pastel Turquoise", "color": "#99c5c4", "used": false },
+    { "name": "Light Green", "color": "#b2fba5", "used": false },
+    { "name": "Pastel Purple", "color": "#b39eb5", "used": false },
+    { "name": "Pastel Lilac", "color": "#bdb0d0", "used": false },
+    { "name": "Light Periwinkle", "color": "#c1c6fc", "used": false },
+    { "name": "Pastel Violet", "color": "#cb99c9", "used": false },
+    { "name": "Pale Mauve", "color": "#c6a4a4", "used": false },
+    { "name": "Pastel Mint", "color": "#cef0cc", "used": false },
+    { "name": "Pastel Lavender", "color": "#d8a1c4", "used": false },
+    { "name": "Pastel Pink", "color": "#dea5a4", "used": false },
+    { "name": "Pastel Magenta", "color": "#f49ac2", "used": false },
+    { "name": "Baby Pink", "color": "#ffb7ce", "used": false },
+    { "name": "Baby Purple", "color": "#ca9bf7", "used": false },
+    { "name": "Light Pink", "color": "#ff9899", "used": false }
+  ],
+  "lists": [],
+  "tasks": [
+    {
+      "title": "Assignments",
+      "description": "Appsdev",
+      "date": "2023-09-18",
+      "list": "",
+      "subtask": ["Appsdev Code", "Review"],
+      "active": 0
+    }
+  ]
+}

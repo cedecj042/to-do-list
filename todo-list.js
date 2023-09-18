@@ -1,5 +1,5 @@
 let menus = [
-    { name: 'Tasks', icon: 'icons/list-check-solid.svg', total: 1 },
+    { name: 'Tasks', icon: 'icons/list-check-solid.svg', total: 3 },
     { name: 'Upcoming', icon: 'icons/forward-solid.svg' },
     { name: 'Sticky Wall', icon: 'icons/note-sticky-solid.svg' }
 ];
@@ -23,15 +23,13 @@ let colors = [
     { name: 'Light Pink', color: '#ff9899', used: false }
 ]
 
-let lists = [
-    // { name: 'Personal', color: colors[0].color,total: },
-    // { name: 'School', color: colors[1].color,total: },
-    // { name: 'List', color: colors[2].color,total: }
-];
+let lists = [];
 
 //task = title,description,list,due date,tags
 const tasks = [
-    { title: "Assignments", description: "Appsdev", date: "2023-09-18", list: "", subtask: ["Appsdev Code", "Review"], active: 0 }
+    { title: "Assignments", description: "Appsdev", date: "2023-09-19", list: "", subtask: ["Appsdev Code", "Review"], active: false },
+    { title: "SPMP", description: "Continue with the Functional Requirements", date: "2023-09-21", list: "", subtask: ["Use Case", "Functional Requirements"], active: false },
+    { title: "Business Model", description: "Create a Business Model validation board", date: "2023-09-20", list: "", subtask: ["Meeting", "Business Model Canvas"], active: false }
 ];
 
 //remove task
@@ -39,9 +37,6 @@ function removeTaskByTitle(title) {
     const index = tasks.findIndex(task => task.title === title);
     if (index !== -1) {
         tasks.splice(index, 1);
-        // console.log(`Task "${title}" has been removed.`);
-    } else {
-        // console.log(`Task "${title}" not found.`);
     }
 }
 
@@ -54,7 +49,7 @@ function getVariable(name) {
 function updateTotal(menu) {
     const isFoundInLists = lists.includes(menu);
     menus[0].total = tasks.length;
-    if(isFoundInLists){
+    if (isFoundInLists) {
         let totalvar = getVariable(menu.name);
         let total = document.getElementsByClassName(totalvar);
         for (let i = 0; i < total.length; i++) {
@@ -65,7 +60,7 @@ function updateTotal(menu) {
         for (let i = 0; i < menustotal.length; i++) {
             menustotal[i].innerText = menus[0].total;
         }
-    }else {
+    } else {
         let totalvar = getVariable(menu.name);
         let total = document.getElementsByClassName(totalvar);
         for (let i = 0; i < total.length; i++) {
@@ -165,7 +160,44 @@ function createSubtaskItem(subtaskText, task, index) {
     btn.appendChild(i);
     return li;
 }
+function updateActive(btnevent) {
 
+
+    if (btnevent !== undefined) {
+        let btn = btnevent.target;
+        while (btn.tagName !== "BUTTON") {
+            btn = btn.parentElement;
+        }
+        currTask = btn.children[0].children[1].innerText;
+        let btns = document.getElementsByClassName("task-button");
+        for(let i =0 ;i<btns.length;i++){
+            btns[i].style.backgroundColor = "#fff";
+            btns[i].style.border = "1px solid rgba(0, 0, 0, .055)";
+        }
+        tasks.forEach(task => {
+            if (currTask === task.title) {
+                task.active = true;
+                btn.style.backgroundColor = "#eceef3";
+                btn.style.border = "1px solid rgba(0, 0, 0, .025)";
+            } else {
+                task.active = false;
+            }
+        });
+    } else {
+        tasks.forEach(task => {
+            task.active = false;
+        });
+        let btns = document.getElementsByClassName("task-button");
+        for(let i =0 ;i<btns.length;i++){
+            // console.log(btns[i]);
+            btns[i].style.backgroundColor = "#fff";
+            btns[i].style.border = "1px solid rgba(0, 0, 0, .055)";
+        }
+    }
+    
+    // #eceef3
+
+}
 
 // List
 let createList = () => {
@@ -347,8 +379,6 @@ let createContentList = (bodyContent, list, event) => {
     updateTotal(list, event);
 };
 
-
-
 //task
 const createTasks = () => {
     let taskTag = document.getElementById("task");
@@ -385,26 +415,6 @@ const createTasks = () => {
     taskFrag.appendChild(taskul);
     taskTag.appendChild(taskFrag);
 }
-
-const showTask = (menu, event) => {
-
-    if (document.getElementById("body-content") != null) {
-        document.getElementById("body-content").remove();
-    }
-    let body = document.getElementById("selectedMenu");
-    createTitle(body, menu);
-
-    let bodyContent = document.getElementById("body-content");
-    if (menu.name === "Upcoming") {
-        createContentUpcoming(bodyContent, menu, event);
-    } else if (menu.name === "Tasks") {
-        createContentTasks(bodyContent, menu, event);
-    } else {
-        createContentSticky(bodyContent, menu);
-    }
-    body.appendChild(bodyContent);
-
-};
 
 //create Subtask 
 const addingSubtask = (ul, input, task) => {
@@ -488,7 +498,6 @@ const createSubtask = (task) => {
 
 //create Active Task
 const viewTask = (task, btnevent, menu) => {
-
     // const selectedTaskDiv = document.getElementById("selectedTask");
     let selectedTaskDiv = document.getElementById("selectedTask");
     if (selectedTaskDiv === null) {
@@ -510,6 +519,7 @@ const viewTask = (task, btnevent, menu) => {
     let close = document.createElement("i");
     close.className = "icon-close";
     close.addEventListener("click", () => {
+        updateActive();
         selectedTaskDiv.remove();
     });
     contentheader.appendChild(h2);
@@ -585,7 +595,7 @@ const viewTask = (task, btnevent, menu) => {
     sbtn.innerText = "Save Changes";
     btns.appendChild(dbtn);
     btns.appendChild(sbtn);
-    const li = btnevent.target.parentElement.parentElement;
+
     dbtn.addEventListener("click", () => {
         lists.forEach(list => {
             if (previousVal !== task.list) {
@@ -599,7 +609,7 @@ const viewTask = (task, btnevent, menu) => {
         removeSelectedTask();
     });
     sbtn.addEventListener("click", () => {
-        
+        updateActive();
         if (previousVal !== task.list && lists.length !== 0) {
             lists.forEach(list => {
                 if (list.name === previousVal) {
@@ -613,19 +623,19 @@ const viewTask = (task, btnevent, menu) => {
             });
         }
         removeSelectedTask();
-        let li = btnevent.target;
+
         task.title = tasktitle.value;
         task.description = textarea.value;
         task.date = dateinput.value;
         const checklist = select.value;
         task.list = checklist === "Select an option" ? "" : checklist;
-
-        while(li.tagName !== "LI"){
+        let li = btnevent.target;
+        while (li.tagName !== "LI") {
             li = li.parentElement;
         }
         li.children[0].remove();
-        let button = addingTaskElement(task,menu);
-        li.appendChild(button); 
+        let button = addingTaskElement(task, menu);
+        li.appendChild(button);
 
     });
     selectedTaskDiv.append(btns);
@@ -710,28 +720,18 @@ let addingTaskElement = (task, menu) => {
     let h3name = document.createElement("h3");
     h3name.innerText = task.title;
     taskmain.appendChild(h3name);
-    let span = document.createElement("span");
-    let icon = document.createElement("i");
-    span.appendChild(icon);
-    taskmain.appendChild(span);
     button.appendChild(taskmain);
     button.addEventListener("click", (event) => {
-        button.style.backgroundColor = "#eff0f3";
-        button.style.border = "1px solid rgba(0, 0, 0, 0)";
-        button.style.borderRadius = "10px";
+        updateActive(event);
         viewTask(task, event, menu);
-
     });
-    button.addEventListener('focusout', (event) => {
-        button.style.backgroundColor = "#fff";
-        button.style.border = "1px solid rgba(0, 0, 0, .055)";
-        button.style.borderTop = "0";
-        button.style.borderLeft = "0";
-        button.style.borderRight = "0";
-        button.style.borderRadius = "0";
-        button.style.borderRadius = "0";
+    // let selectedTaskDiv = document.getElementById("")
+    // if()
+    // button.addEventListener('focusout', (event) => {
+    //     button.style.backgroundColor = "#fff";
+    //     button.style.border = "1px solid rgba(0, 0, 0, .055)";
 
-    });
+    // });
     if (task.date !== "" || task.list !== "") {
         let extra = document.createElement("div");
         extra.className = "extra";
@@ -771,7 +771,6 @@ let addingTaskElement = (task, menu) => {
     return button;
 
 }
-
 
 let createTitle = (body, menu) => {
     let div = document.createElement("div");
@@ -873,34 +872,108 @@ function appendSection(container, title, list, total) {
         h3.innerText = `${total}`;
         sectionTotal.append(h3);
 
-//upcoming task
-let createContentUpcoming = (bodyContent, menu, event) => {
+        sectionHead.appendChild(sectionTitle);
+        sectionHead.appendChild(sectionTotal);
+        sectionHead.appendChild(span);
+        section.appendChild(sectionHead);
+        section.appendChild(list);
+        container.appendChild(section);
+    }
+}
 
+function createContentUpcoming(bodyContent, menu, event) {
     let div = document.createElement("div");
     div.className = "content";
 
-    let ul = document.createElement("ul");
-    ul.className = "task";
-    //displaying of previous task based on current day
-    tasks.forEach(task => {
-        const date = new Date();
-        const dateArray = task.date.split('-');
-        let month = dateArray[0] | 0;
-        let day = dateArray[1] | 0;
-        let year = dateArray[2] | 0;
+    let ulToday = document.createElement("ul");
+    ulToday.className = "task";
+    let ulTomorrow = document.createElement("ul");
+    ulTomorrow.className = "task";
+    let ulThisWeek = document.createElement("ul");
+    ulThisWeek.className = "task";
+    let ulGeneral = document.createElement("ul");
+    ulGeneral.className = "task";
 
-        if (date.getDate() > day || date.getMonth() + 1 > month || date.getFullYear() > year) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to the beginning of the day
+
+    // Counters for each section
+    let todayCount = 0;
+    let tomorrowCount = 0;
+    let thisWeekCount = 0;
+    let generalCount = 0;
+
+    tasks.forEach(task => {
+        if (!task.date) {
+            // Task has no date, add it to the "General" section
             let li = document.createElement("li");
             let button = addingTaskElement(task, menu);
             li.appendChild(button);
-            ul.appendChild(li);
+            ulGeneral.appendChild(li);
+            generalCount++;
+        } else {
+            const dueDate = new Date(task.date);
+            dueDate.setHours(0, 0, 0, 0); // Set time to the beginning of the day
+
+            if (dueDate.getTime() === today.getTime()) {
+                // Task is due today
+                let li = document.createElement("li");
+                let button = addingTaskElement(task, menu);
+                li.appendChild(button);
+                ulToday.appendChild(li);
+                todayCount++;
+            } else {
+                // Calculate the time difference in days
+                const timeDiff = Math.floor((dueDate - today) / (1000 * 60 * 60 * 24));
+
+                if (timeDiff === 1) {
+                    // Task is due tomorrow
+                    let li = document.createElement("li");
+                    let button = addingTaskElement(task, menu);
+                    li.appendChild(button);
+                    ulTomorrow.appendChild(li);
+                    tomorrowCount++;
+                } else if (timeDiff >= 2 && timeDiff <= 7) {
+                    // Task is due this week (within 7 days)
+                    let li = document.createElement("li");
+                    let button = addingTaskElement(task, menu);
+                    li.appendChild(button);
+                    ulThisWeek.appendChild(li);
+                    thisWeekCount++;
+                }
+            }
         }
     });
 
+    // Add sections to the div
+    appendSection(div, "Today", ulToday, todayCount);
+    appendSection(div, "Tomorrow", ulTomorrow, tomorrowCount);
+    appendSection(div, "This Week", ulThisWeek, thisWeekCount);
+    appendSection(div, "General", ulGeneral, generalCount);
 
-    div.appendChild(ul);
     bodyContent.appendChild(div);
     updateTotal(menu, event);
+}
+
+const showTask = (menu, event) => {
+
+    if (document.getElementById("body-content") != null) {
+        document.getElementById("body-content").remove();
+    }
+    let body = document.getElementById("selectedMenu");
+    createTitle(body, menu);
+
+    let bodyContent = document.getElementById("body-content");
+    if (menu.name === "Upcoming") {
+        createContentUpcoming(bodyContent, menu, event);
+    } else if (menu.name === "Tasks") {
+        console.log("Tasksss");
+        createContentTasks(bodyContent, menu, event);
+    } else {
+        createContentSticky(bodyContent, menu);
+    }
+    body.appendChild(bodyContent);
+
 };
 
 createTasks();
