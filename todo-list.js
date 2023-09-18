@@ -836,6 +836,42 @@ let createTitle = (body, menu) => {
     body.appendChild(div);
 
 };
+function toggleListVisibility(list, expanded, span) {
+    // Toggle a class on the list to control its visibility
+    if (expanded) {
+        span.className = "icon-expand down";
+        list.classList.remove("hidden");
+    } else {
+        span.className = "icon-expand up";
+        list.classList.add("hidden");
+    }
+}
+function appendSection(container, title, list, total) {
+    if (list.children.length > 0) {
+        let section = document.createElement("div");
+        section.className = "section expanded";
+
+        let sectionHead = document.createElement("div");
+        sectionHead.className = "section-head";
+
+        let span = document.createElement("span");
+        span.className = "icon-expand down";
+        span.addEventListener("click", () => {
+            section.classList.toggle("expanded");
+            toggleListVisibility(list, section.classList.contains("expanded"), span);
+        });
+
+        let icon = document.createElement("i");
+        span.appendChild(icon);
+
+        let sectionTitle = document.createElement("h3");
+        sectionTitle.innerText = title;
+
+        let sectionTotal = document.createElement("span");
+        sectionTotal.className = "section-total";
+        let h3 = document.createElement("h3");
+        h3.innerText = `${total}`;
+        sectionTotal.append(h3);
 
 //upcoming task
 let createContentUpcoming = (bodyContent, menu, event) => {
