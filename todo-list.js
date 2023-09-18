@@ -595,7 +595,10 @@ const viewTask = (task, btnevent, menu) => {
     sbtn.innerText = "Save Changes";
     btns.appendChild(dbtn);
     btns.appendChild(sbtn);
-
+    let li = btnevent.target;
+    while (li.tagName !== "LI") {
+        li = li.parentElement;
+    }
     dbtn.addEventListener("click", () => {
         lists.forEach(list => {
             if (previousVal !== task.list) {
@@ -629,10 +632,7 @@ const viewTask = (task, btnevent, menu) => {
         task.date = dateinput.value;
         const checklist = select.value;
         task.list = checklist === "Select an option" ? "" : checklist;
-        let li = btnevent.target;
-        while (li.tagName !== "LI") {
-            li = li.parentElement;
-        }
+
         li.children[0].remove();
         let button = addingTaskElement(task, menu);
         li.appendChild(button);
