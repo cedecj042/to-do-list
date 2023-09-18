@@ -1,6 +1,6 @@
 let menus = [
     { name: 'Tasks', icon: 'icons/list-check-solid.svg', total: 1 },
-    { name: 'Upcoming', icon: 'icons/forward-solid.svg', total: 0 },
+    { name: 'Upcoming', icon: 'icons/forward-solid.svg' },
     { name: 'Sticky Wall', icon: 'icons/note-sticky-solid.svg' }
 ];
 // menus[2].total = menus[0].total + menus[1].total;
@@ -24,14 +24,14 @@ let colors = [
 ]
 
 let lists = [
-    // { name: 'Personal', color: colors[0].color },
-    // { name: 'School', color: colors[1].color },
-    // { name: 'List', color: colors[2].color }
+    // { name: 'Personal', color: colors[0].color,total: },
+    // { name: 'School', color: colors[1].color,total: },
+    // { name: 'List', color: colors[2].color,total: }
 ];
 
 //task = title,description,list,due date,tags
 const tasks = [
-    { title: "Assignments", description: "Appsdev", date: "2023-09-18", list: "", subtask: ["Appsdev Code", "Review"],active:0}
+    { title: "Assignments", description: "Appsdev", date: "2023-09-18", list: "", subtask: ["Appsdev Code", "Review"], active: 0 }
 ];
 
 //remove task
@@ -52,12 +52,34 @@ function getVariable(name) {
     return name + "-total";
 }
 function updateTotal(menu) {
-    let totalvar = getVariable(menu.name);
-    let total = document.getElementsByClassName(totalvar);
-    for (let i = 0; i < total.length; i++) {
-        total[i].innerText = menu.total;
+    const isFoundInLists = lists.includes(menu);
+    menus[0].total = tasks.length;
+    if(isFoundInLists){
+        let totalvar = getVariable(menu.name);
+        let total = document.getElementsByClassName(totalvar);
+        for (let i = 0; i < total.length; i++) {
+            total[i].innerText = menu.total;
+        }
+        menusvar = getVariable(menus[0].name);
+        menustotal = document.getElementsByClassName(menusvar);
+        for (let i = 0; i < menustotal.length; i++) {
+            menustotal[i].innerText = menus[0].total;
+        }
+    }else {
+        let totalvar = getVariable(menu.name);
+        let total = document.getElementsByClassName(totalvar);
+        for (let i = 0; i < total.length; i++) {
+            total[i].innerText = menu.total;
+        }
     }
 
+}
+
+function removeSelectedTask() {
+    let div = document.getElementById("selectedTask");
+    if (div !== null) {
+        div.remove();
+    }
 }
 
 function shortenName(colorName) {
@@ -82,32 +104,68 @@ function isButton(event) {
 function getRandomIndex(array) {
     return Math.floor(Math.random() * array.length);
 }
-function removeTaskAndUpdateMenu(task, menu,li) {
+function removeTaskAndUpdateMenu(task, menu, li) {
     li.parentElement.removeChild(li);
     removeTaskByTitle(task.title);
-    menu.total--;
     updateTotal(menu);
 }
+function updateListSelect() {
+    const select = document.getElementById("select-list");
+    let val = select.value;
+    if (select === null) { return }
 
-function updateTaskAndAddButton(task, tasktitle, textarea, dateinput, select, menu, li) {
-    task.title = tasktitle.value;
-    task.description = textarea.value;
-    task.date = dateinput.value;
-    const checklist = select.value;
-    task.list = checklist === "Select an option" ? "" : checklist;
+    select.innerHTML = "";
 
-    li.innerHTML = ""; // Clear existing content
+    let defaultopt = document.createElement("option");
+    defaultopt.innerText = "Select an option";
+    defaultopt.disabled = true;
 
-    if (li.children.length === 0) {
-        const button = addingTaskElement(task, menu);
-        li.appendChild(button);
+    if (val !== defaultopt.innerText) {
+        for (const list of lists) {
+            if (list.name !== select.value) {
+                const option = document.createElement("option");
+                option.value = list.name;
+                option.text = list.name;
+                select.appendChild(option);
+            }
+        }
+    } else {
+        select.appendChild(defaultopt);
+        for (const list of lists) {
+            const option = document.createElement("option");
+            option.value = list.name;
+            option.text = list.name;
+            select.appendChild(option);
+        }
+        select.value = val
     }
-
-    updateTotal(menu);
 }
 
 
-//main functions
+function removeSubtask(task, subtaskIndex, li) {
+    if (subtaskIndex !== -1) {
+        task.subtask.splice(subtaskIndex, 1);
+        li.remove();
+    }
+}
+
+function createSubtaskItem(subtaskText, task, index) {
+    let li = document.createElement("li");
+    li.className = "subtask-li";
+    let btn = document.createElement("button");
+    btn.className = "subtask-trash";
+    btn.addEventListener("click", () => {
+        removeSubtask(task, index, li);
+    });
+    let i = document.createElement("i");
+    let h3 = document.createElement("h3");
+    h3.innerText = subtaskText;
+    li.appendChild(h3);
+    li.appendChild(btn);
+    btn.appendChild(i);
+    return li;
+}
+
 
 // List
 let createList = () => {
@@ -115,6 +173,7 @@ let createList = () => {
     let taskFrag = document.createDocumentFragment();
     let taskul = document.createElement("ul");
     taskul.setAttribute("class", "dynamic-ul");
+    taskul.id = "ul-list";
 
     lists.forEach(mylist => {
         let li = document.createElement("li");
@@ -127,12 +186,15 @@ let createList = () => {
         btn.appendChild(i);
         btn.appendChild(h5);
         taskul.appendChild(li);
-        if (mylist.total != undefined) {
+        if (mylist.total !== undefined) {
             let span = document.createElement("span");
             span.innerText = mylist.total;
-            span.class = mylist.name + "-total";
+            span.className = mylist.name + "-total";
             btn.appendChild(span);
         }
+        btn.addEventListener("click", (event) => {
+            showList(event, mylist);
+        })
     });
     let li = document.createElement("li");
     let btn = document.createElement("button");
@@ -156,7 +218,6 @@ let createList = () => {
     taskFrag.appendChild(taskul);
     taskTag.appendChild(taskFrag);
 }
-
 const addList = (event) => {
     let div = document.body.childNodes[3];
     // div
@@ -226,7 +287,7 @@ const addList = (event) => {
         }
         div.setAttribute("class", "add-component");
         addcontainer.remove();
-
+        updateListSelect();
     });
 
     input.addEventListener('keydown', (event) => {
@@ -244,6 +305,49 @@ const addList = (event) => {
     input.focus()
 
 }
+const showList = (event, list) => {
+
+    if (document.getElementById("body-content") != null) {
+        document.getElementById("body-content").remove();
+    }
+    let body = document.getElementById("selectedMenu");
+    createTitle(body, list);
+
+    let bodyContent = document.getElementById("body-content");
+    createContentList(bodyContent, list, event);
+    body.appendChild(bodyContent);
+
+};
+
+let createContentList = (bodyContent, list, event) => {
+
+    let div = document.createElement("div");
+    div.className = "content";
+
+    let ul = document.createElement("ul");
+    ul.className = "task";
+    //displaying of previous task based on current day
+    tasks.forEach(task => {
+        if (task.list === list.name) {
+            let li = document.createElement("li");
+            let button = addingTaskElement(task, list, bodyContent);
+            button.removeEventListener("click", () => { });
+            button.addEventListener("click", (event) => {
+                button.style.backgroundColor = "#eff0f3";
+                button.style.border = "1px solid rgba(0, 0, 0, 0)";
+                button.style.borderRadius = "10px";
+                viewTask(task, event, list);
+            });
+            li.appendChild(button);
+            ul.appendChild(li);
+        }
+    });
+    div.appendChild(ul);
+    bodyContent.appendChild(div);
+    updateTotal(list, event);
+};
+
+
 
 //task
 const createTasks = () => {
@@ -282,6 +386,26 @@ const createTasks = () => {
     taskTag.appendChild(taskFrag);
 }
 
+const showTask = (menu, event) => {
+
+    if (document.getElementById("body-content") != null) {
+        document.getElementById("body-content").remove();
+    }
+    let body = document.getElementById("selectedMenu");
+    createTitle(body, menu);
+
+    let bodyContent = document.getElementById("body-content");
+    if (menu.name === "Upcoming") {
+        createContentUpcoming(bodyContent, menu, event);
+    } else if (menu.name === "Tasks") {
+        createContentTasks(bodyContent, menu, event);
+    } else {
+        createContentSticky(bodyContent, menu);
+    }
+    body.appendChild(bodyContent);
+
+};
+
 //create Subtask 
 const addingSubtask = (ul, input, task) => {
     let li = document.createElement("li");
@@ -317,6 +441,7 @@ const addingSubtask = (ul, input, task) => {
 
     ul.appendChild(li);
 }
+
 const createSubtask = (task) => {
     let frag = document.createDocumentFragment();
 
@@ -350,42 +475,33 @@ const createSubtask = (task) => {
         addingSubtask(ul, input, task);
         input.focus();
     });
-    task.subtask.forEach(sTask => {
-        let li = document.createElement("li");
-        li.className = "subtask-li";
-        let btn = document.createElement("button");
-        btn.className = "subtask-trash";
-        btn.addEventListener("click", (event) => {
-            task.subtask.splice(task.subtask.indexOf(task), 1);
-            event.target.parentElement.parentElement.remove();
-        })
-        let i = document.createElement("i");
-        let h3 = document.createElement("h3");
-        h3.innerText = sTask;
-        li.appendChild(h3);
-        li.appendChild(btn);
-        btn.appendChild(i);
+
+    task.subtask.forEach((sTask, index) => {
+        let li = createSubtaskItem(sTask, task, index);
         ul.appendChild(li);
     });
+
     div.appendChild(ul);
     frag.appendChild(div);
     return frag;
-
 }
 
 //create Active Task
 const viewTask = (task, btnevent, menu) => {
 
-    const selectedTaskDiv = document.getElementById("selectedTask");
+    // const selectedTaskDiv = document.getElementById("selectedTask");
+    let selectedTaskDiv = document.getElementById("selectedTask");
+    if (selectedTaskDiv === null) {
+        selectedTaskDiv = document.createElement("div");
+    }
     selectedTaskDiv.innerHTML = "";
+    selectedTaskDiv.id = "selectedTask";
+    document.body.appendChild(selectedTaskDiv);
 
-    let title = event.target.innerText;
-
-    let div = document.getElementById("selectedTask");
-    div.className = "show";
+    selectedTaskDiv.className = "show";
     let contentdiv = document.createElement("div");
     contentdiv.className = "at-content";
-    div.appendChild(contentdiv);
+    selectedTaskDiv.appendChild(contentdiv);
     let contentheader = document.createElement("div");
     contentheader.className = "at-header";
     contentdiv.appendChild(contentheader);
@@ -394,7 +510,7 @@ const viewTask = (task, btnevent, menu) => {
     let close = document.createElement("i");
     close.className = "icon-close";
     close.addEventListener("click", () => {
-        div.className = "hide";
+        selectedTaskDiv.remove();
     });
     contentheader.appendChild(h2);
     contentheader.appendChild(close);
@@ -421,6 +537,7 @@ const viewTask = (task, btnevent, menu) => {
     let h3 = document.createElement("h3");
     h3.innerText = "List";
     let select = document.createElement("select");
+    select.id = "select-list";
     let defaultopt = document.createElement("option");
     defaultopt.innerText = "Select an option";
     defaultopt.disabled = true;
@@ -434,6 +551,10 @@ const viewTask = (task, btnevent, menu) => {
         option.innerText = list.name;
         select.appendChild(option);
     });
+    if (task.list !== "") {
+        select.value = task.list;
+    }
+    let previousVal = select.value;
     list.appendChild(h3);
     list.appendChild(select);
 
@@ -466,73 +587,50 @@ const viewTask = (task, btnevent, menu) => {
     btns.appendChild(sbtn);
     const li = btnevent.target.parentElement.parentElement;
     dbtn.addEventListener("click", () => {
-        removeTaskAndUpdateMenu(task, menu,li);
-        document.getElementById("selectedTask").className = "hide";
-    });
-    sbtn.addEventListener("click", () => {
-        updateTaskAndAddButton(task, tasktitle, textarea, dateinput, select, menu, li);
-        document.getElementById("selectedTask").className = "hide";
-    });
-    div.append(btns);
-
-}
-
-
-let createTitle = (body, menu) => {
-    let div = document.createElement("div");
-    div.setAttribute("id", "body-content");
-
-    let title = body.children[0];
-    title.className = "title show";
-    let name = title.children[0];
-    name.innerText = menu.name;
-    let span = title.children[1];
-    span.textContent = menu.total;
-    span.setAttribute("class", menu.name + "-total");
-
-    let trash = document.getElementsByClassName("icon-trash");
-    trash[0].addEventListener("click", (event) => {
-        let id = document.getElementById("selectedTask");
-        console.log(id);
-        if (id.className === "show") {
-            id.className = "hide";
-            id.innerHTML = "";
-        }
-        let ul = document.getElementsByClassName("task");
-        let li = ul[0].children;
-        let inputArr = [];
-
-        for (let i = 0; i < li.length; i++) {
-            // Check if the input element exists before trying to access its children property.
-            if (li[i].children[0].children[0].children[0]) {
-                let input = li[i].children[0].children[0].children[0];
-                if (input.checked === true) {
-                    inputArr.push(input.parentElement.parentElement);
-                    let value = input.parentElement.children[1].innerText;
-                    for (let i = 0; i < tasks.length; i++) {
-                        if (tasks[i].title === value) {
-                            tasks.splice(i, 1);
-                            break;
-                        }
-                    }
+        lists.forEach(list => {
+            if (previousVal !== task.list) {
+                if (list.name === task.name) {
+                    list.total--;
+                    updateTotal(list);
                 }
             }
-        }
-
-        // Loop through the inputArr array and remove the elements from the DOM.
-        for (let i = 0; i < inputArr.length; i++) {
-            inputArr[i].parentElement.remove();
-        }
-
-        event.stopPropagation();
-        // Update the menu.total variable.
-        menu.total -= inputArr.length;
-        updateTotal(menu);
+        });
+        removeTaskAndUpdateMenu(task, menu, li);
+        removeSelectedTask();
     });
-    trash[0].removeEventListener("click", () => { });
-    body.appendChild(div);
+    sbtn.addEventListener("click", () => {
+        
+        if (previousVal !== task.list && lists.length !== 0) {
+            lists.forEach(list => {
+                if (list.name === previousVal) {
+                    list.total--;
+                    updateTotal(list);
+                }
+                if (list.name === select.value) {
+                    list.total++;
+                    updateTotal(list);
+                }
+            });
+        }
+        removeSelectedTask();
+        let li = btnevent.target;
+        task.title = tasktitle.value;
+        task.description = textarea.value;
+        task.date = dateinput.value;
+        const checklist = select.value;
+        task.list = checklist === "Select an option" ? "" : checklist;
 
-};
+        while(li.tagName !== "LI"){
+            li = li.parentElement;
+        }
+        li.children[0].remove();
+        let button = addingTaskElement(task,menu);
+        li.appendChild(button); 
+
+    });
+    selectedTaskDiv.append(btns);
+
+}
 
 let createContentTasks = (bodyContent, menu, menuevent) => {
     let div = document.createElement("div");
@@ -581,7 +679,6 @@ let createContentTasks = (bodyContent, menu, menuevent) => {
     div.appendChild(ul);
     bodyContent.appendChild(div);
     updateTotal(menu);
-
 }
 
 let addTask = (menu, ul, taskname) => {
@@ -591,7 +688,6 @@ let addTask = (menu, ul, taskname) => {
     let year = date.getFullYear();
     let newTask = { title: taskname, description: "", date: "", list: "", subtask: [] };
     tasks.push(newTask);
-    menu.total++;
     let li = document.createElement("li");
     let button = addingTaskElement(newTask, menu);
     li.appendChild(button);
@@ -677,6 +773,69 @@ let addingTaskElement = (task, menu) => {
 }
 
 
+let createTitle = (body, menu) => {
+    let div = document.createElement("div");
+    div.setAttribute("id", "body-content");
+    let title = body.children[0];
+    title.className = "title show";
+    let name = title.children[0];
+    name.innerText = menu.name;
+
+
+    if (menu.total === undefined) {
+        title.children[1].className = "hide";
+
+    } else {
+        title.children[1].className = "show";
+        let span = title.children[1];
+        span.textContent = menu.total;
+        span.setAttribute("class", menu.name + "-total show");
+    }
+    let trash = document.getElementsByClassName("icon-trash");
+    if (trash[0] !== undefined) {
+        trash[0].addEventListener("click", (event) => {
+            let id = document.getElementById("selectedTask");
+            if (id.className === "show") {
+                id.className = "hide";
+                removeSelectedTask();
+            }
+            let ul = document.getElementsByClassName("task");
+            let li = ul[0].children;
+            let inputArr = [];
+
+            for (let i = 0; i < li.length; i++) {
+                // Check if the input element exists before trying to access its children property.
+                if (li[i].children[0].children[0].children[0]) {
+                    let input = li[i].children[0].children[0].children[0];
+                    if (input.checked === true) {
+                        inputArr.push(input.parentElement.parentElement);
+                        let value = input.parentElement.children[1].innerText;
+                        for (let i = 0; i < tasks.length; i++) {
+                            if (tasks[i].title === value) {
+                                tasks.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Loop through the inputArr array and remove the elements from the DOM.
+            for (let i = 0; i < inputArr.length; i++) {
+                inputArr[i].parentElement.remove();
+            }
+
+            event.stopPropagation();
+            // Update the menu.total variable.
+            menu.total -= inputArr.length;
+            updateTotal(menu);
+        });
+        trash[0].removeEventListener("click", () => { });
+
+    }
+    body.appendChild(div);
+
+};
 
 //upcoming task
 let createContentUpcoming = (bodyContent, menu, event) => {
@@ -706,27 +865,6 @@ let createContentUpcoming = (bodyContent, menu, event) => {
     div.appendChild(ul);
     bodyContent.appendChild(div);
     updateTotal(menu, event);
-};
-
-const showTask = (menu, event) => {
-
-    if (document.getElementById("body-content") != null) {
-        document.getElementById("body-content").remove();
-    }
-    let body = document.getElementById("selectedMenu");
-    createTitle(body, menu, event);
-
-    let bodyContent = document.getElementById("body-content");
-    if (menu.name === "Upcoming") {
-        createContentUpcoming(bodyContent, menu, event);
-    } else if (menu.name === "Tasks") {
-        createContentTasks(bodyContent, menu, event);
-    } else {
-        createContentSticky(bodyContent, menu);
-    }
-    body.appendChild(bodyContent);
-
-
 };
 
 createTasks();

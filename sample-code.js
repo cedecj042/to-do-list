@@ -249,3 +249,65 @@ const viewTask = (task, btnevent, menu) => {
     div.append(btns);
 
 }
+
+
+
+
+
+//create subtask
+
+// const createSubtask = (task) => {
+//     let frag = document.createDocumentFragment();
+
+//     let div = document.createElement("div");
+//     div.className = "subtask";
+
+//     let h3 = document.createElement("h3");
+//     h3.innerText = "Subtask";
+//     div.appendChild(h3);
+
+//     let button = document.createElement('button');
+//     button.className = "icon-trash";
+//     let i = document.createElement("i");
+//     button.appendChild(i);
+
+//     let btn = document.createElement("button");
+//     btn.className = "btn";
+
+//     let icon = document.createElement("i");
+//     icon.className = "icon";
+//     let addh3 = document.createElement("h3");
+//     addh3.innerText = "Add Subtask";
+//     btn.appendChild(icon);
+//     btn.appendChild(addh3);
+//     div.appendChild(btn);
+
+//     let ul = document.createElement("ul");
+//     ul.className = "subtask-ul";
+//     btn.addEventListener("click", () => {
+//         let input = document.createElement("input");
+//         addingSubtask(ul, input, task);
+//         input.focus();
+//     });
+//     task.subtask.forEach(sTask => {
+//         let li = document.createElement("li");
+//         li.className = "subtask-li";
+//         let btn = document.createElement("button");
+//         btn.className = "subtask-trash";
+//         btn.addEventListener("click", (event) => {
+//             task.subtask.splice(task.subtask.indexOf(task), 1);
+//             event.target.parentElement.parentElement.remove();
+//             event.stopPropagation();
+//         });
+//         let i = document.createElement("i");
+//         let h3 = document.createElement("h3");
+//         h3.innerText = sTask;
+//         li.appendChild(h3);
+//         li.appendChild(btn);
+//         btn.appendChild(i);
+//         ul.appendChild(li);
+//     });
+//     div.appendChild(ul);
+//     frag.appendChild(div);
+//     return frag;
+// }
