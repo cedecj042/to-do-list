@@ -1,12 +1,11 @@
 let menus = [
     { name: 'Tasks', icon: 'icons/list-check-solid.svg', total: 3 },
-    { name: 'Upcoming', icon: 'icons/forward-solid.svg' },
-    { name: 'Sticky Wall', icon: 'icons/note-sticky-solid.svg' }
+    { name: 'Upcoming', icon: 'icons/forward-solid.svg' }
 ];
 // menus[2].total = menus[0].total + menus[1].total;
 let colors = [
     { name: 'Pastel Green', color: '#77dd77', used: false },
-    { name: 'Baby Blue', color: '#89cff0', used: false },
+    { name: 'Baby Blue', color: '#89cff0', used: true },
     { name: 'Pastel Turquoise', color: '#99c5c4', used: false },
     { name: 'Light Green', color: '#b2fba5', used: false },
     { name: 'Pastel Purple', color: '#b39eb5', used: false },
@@ -23,7 +22,7 @@ let colors = [
     { name: 'Light Pink', color: '#ff9899', used: false }
 ]
 
-let lists = [];
+let lists = [{ name: "School", color: "#89cff0", total: 0 }];
 
 //task = title,description,list,due date,tags
 const tasks = [
@@ -32,7 +31,7 @@ const tasks = [
     { title: "Business Model", description: "Create a Business Model validation board", date: "2023-09-20", list: "", subtask: ["Meeting", "Business Model Canvas"], active: false }
 ];
 
-//remove task
+//functions
 function removeTaskByTitle(title) {
     const index = tasks.findIndex(task => task.title === title);
     if (index !== -1) {
@@ -40,9 +39,6 @@ function removeTaskByTitle(title) {
     }
 }
 
-
-
-//functions
 function getVariable(name) {
     return name + "-total";
 }
@@ -135,7 +131,6 @@ function updateListSelect() {
         select.value = val
     }
 }
-
 
 function removeSubtask(task, subtaskIndex, li) {
     if (subtaskIndex !== -1) {
@@ -378,6 +373,7 @@ let createContentList = (bodyContent, list, event) => {
     bodyContent.appendChild(div);
     updateTotal(list, event);
 };
+
 
 //task
 const createTasks = () => {
@@ -835,52 +831,10 @@ let createTitle = (body, menu) => {
     body.appendChild(div);
 
 };
-function toggleListVisibility(list, expanded, span) {
-    // Toggle a class on the list to control its visibility
-    if (expanded) {
-        span.className = "icon-expand down";
-        list.classList.remove("hidden");
-    } else {
-        span.className = "icon-expand up";
-        list.classList.add("hidden");
-    }
-}
-function appendSection(container, title, list, total) {
-    if (list.children.length > 0) {
-        let section = document.createElement("div");
-        section.className = "section expanded";
 
-        let sectionHead = document.createElement("div");
-        sectionHead.className = "section-head";
 
-        let span = document.createElement("span");
-        span.className = "icon-expand down";
-        span.addEventListener("click", () => {
-            section.classList.toggle("expanded");
-            toggleListVisibility(list, section.classList.contains("expanded"), span);
-        });
 
-        let icon = document.createElement("i");
-        span.appendChild(icon);
-
-        let sectionTitle = document.createElement("h3");
-        sectionTitle.innerText = title;
-
-        let sectionTotal = document.createElement("span");
-        sectionTotal.className = "section-total";
-        let h3 = document.createElement("h3");
-        h3.innerText = `${total}`;
-        sectionTotal.append(h3);
-
-        sectionHead.appendChild(sectionTitle);
-        sectionHead.appendChild(sectionTotal);
-        sectionHead.appendChild(span);
-        section.appendChild(sectionHead);
-        section.appendChild(list);
-        container.appendChild(section);
-    }
-}
-
+//create upcoming
 function createContentUpcoming(bodyContent, menu, event) {
     let div = document.createElement("div");
     div.className = "content";
@@ -954,6 +908,52 @@ function createContentUpcoming(bodyContent, menu, event) {
     bodyContent.appendChild(div);
     updateTotal(menu, event);
 }
+function appendSection(container, title, list, total) {
+    if (list.children.length > 0) {
+        let section = document.createElement("div");
+        section.className = "section expanded";
+
+        let sectionHead = document.createElement("div");
+        sectionHead.className = "section-head";
+
+        let span = document.createElement("span");
+        span.className = "icon-expand down";
+        span.addEventListener("click", () => {
+            section.classList.toggle("expanded");
+            toggleListVisibility(list, section.classList.contains("expanded"), span);
+        });
+
+        let icon = document.createElement("i");
+        span.appendChild(icon);
+
+        let sectionTitle = document.createElement("h3");
+        sectionTitle.innerText = title;
+
+        let sectionTotal = document.createElement("span");
+        sectionTotal.className = "section-total";
+        let h3 = document.createElement("h3");
+        h3.innerText = `${total}`;
+        sectionTotal.append(h3);
+
+        sectionHead.appendChild(sectionTitle);
+        sectionHead.appendChild(sectionTotal);
+        sectionHead.appendChild(span);
+        section.appendChild(sectionHead);
+        section.appendChild(list);
+        container.appendChild(section);
+    }
+}
+function toggleListVisibility(list, expanded, span) {
+    // Toggle a class on the list to control its visibility
+    if (expanded) {
+        span.className = "icon-expand down";
+        list.classList.remove("hidden");
+    } else {
+        span.className = "icon-expand up";
+        list.classList.add("hidden");
+    }
+}
+
 
 const showTask = (menu, event) => {
 
@@ -969,9 +969,10 @@ const showTask = (menu, event) => {
     } else if (menu.name === "Tasks") {
         console.log("Tasksss");
         createContentTasks(bodyContent, menu, event);
-    } else {
-        createContentSticky(bodyContent, menu);
-    }
+    } 
+    // else {
+    //     createContentSticky(bodyContent, menu);
+    // }
     body.appendChild(bodyContent);
 
 };
