@@ -165,7 +165,7 @@ function updateActive(btnevent) {
         }
         currTask = btn.children[0].children[1].innerText;
         let btns = document.getElementsByClassName("task-button");
-        for(let i =0 ;i<btns.length;i++){
+        for (let i = 0; i < btns.length; i++) {
             btns[i].style.backgroundColor = "#fff";
             btns[i].style.border = "1px solid rgba(0, 0, 0, .055)";
         }
@@ -183,13 +183,13 @@ function updateActive(btnevent) {
             task.active = false;
         });
         let btns = document.getElementsByClassName("task-button");
-        for(let i =0 ;i<btns.length;i++){
+        for (let i = 0; i < btns.length; i++) {
             // console.log(btns[i]);
             btns[i].style.backgroundColor = "#fff";
             btns[i].style.border = "1px solid rgba(0, 0, 0, .055)";
         }
     }
-    
+
     // #eceef3
 
 }
@@ -597,11 +597,10 @@ const viewTask = (task, btnevent, menu) => {
     }
     dbtn.addEventListener("click", () => {
         lists.forEach(list => {
-            if (previousVal !== task.list) {
-                if (list.name === task.name) {
-                    list.total--;
-                    updateTotal(list);
-                }
+
+            if (list.name === task.list) {
+                list.total--;
+                updateTotal(list);
             }
         });
         removeTaskAndUpdateMenu(task, menu, li);
@@ -609,6 +608,17 @@ const viewTask = (task, btnevent, menu) => {
     });
     sbtn.addEventListener("click", () => {
         updateActive();
+        removeSelectedTask();
+
+        task.title = tasktitle.value;
+        task.description = textarea.value;
+        task.date = dateinput.value;
+        const checklist = select.value;
+        task.list = checklist === "Select an option" ? "" : checklist;
+
+        li.children[0].remove();
+        let button = addingTaskElement(task, menu);
+        li.appendChild(button);
         if (previousVal !== task.list && lists.length !== 0) {
             lists.forEach(list => {
                 if (list.name === previousVal) {
@@ -621,18 +631,6 @@ const viewTask = (task, btnevent, menu) => {
                 }
             });
         }
-        removeSelectedTask();
-
-        task.title = tasktitle.value;
-        task.description = textarea.value;
-        task.date = dateinput.value;
-        const checklist = select.value;
-        task.list = checklist === "Select an option" ? "" : checklist;
-
-        li.children[0].remove();
-        let button = addingTaskElement(task, menu);
-        li.appendChild(button);
-
     });
     selectedTaskDiv.append(btns);
 
@@ -969,7 +967,7 @@ const showTask = (menu, event) => {
     } else if (menu.name === "Tasks") {
         console.log("Tasksss");
         createContentTasks(bodyContent, menu, event);
-    } 
+    }
     // else {
     //     createContentSticky(bodyContent, menu);
     // }
