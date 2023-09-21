@@ -22,7 +22,9 @@
     { "name": "Baby Purple", "color": "#ca9bf7", "used": false },
     { "name": "Light Pink", "color": "#ff9899", "used": false }
   ],
-  "lists": [],
+  "lists": [
+    { "name": "School", "color": "#89cff0", "total": 0 }
+  ],
   "tasks": [
     {
       "title": "Assignments",
@@ -30,7 +32,23 @@
       "date": "2023-09-18",
       "list": "",
       "subtask": ["Appsdev Code", "Review"],
-      "active": 0
+      "active": false
+    },
+    {
+      "title": "SPMP",
+      "description": "Continue with the Functional Requirements",
+      "date": "2023-09-18",
+      "list": "",
+      "subtask":  ["Use Case", "Functional Requirements"],
+      "active": false
+    },
+    {
+      "title": "Business Model",
+      "description": "Create a Business Model validation board",
+      "date": "2023-09-20",
+      "list": "",
+      "subtask": ["Meeting", "Business Model Canvas"],
+      "active": false
     }
   ]
 }

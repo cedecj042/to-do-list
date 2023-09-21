@@ -31,6 +31,7 @@ const tasks = [
     { title: "Business Model", description: "Create a Business Model validation board", date: "2023-09-20", list: "", subtask: ["Meeting", "Business Model Canvas"], active: false }
 ];
 
+
 //functions
 function removeTaskByTitle(title) {
     const index = tasks.findIndex(task => task.title === title);
@@ -837,6 +838,8 @@ function createContentUpcoming(bodyContent, menu, event) {
     let div = document.createElement("div");
     div.className = "content";
 
+    let ulPastDue = document.createElement("ul");
+    ulPastDue.className = "task";
     let ulToday = document.createElement("ul");
     ulToday.className = "task";
     let ulTomorrow = document.createElement("ul");
@@ -850,6 +853,7 @@ function createContentUpcoming(bodyContent, menu, event) {
     today.setHours(0, 0, 0, 0); // Set time to the beginning of the day
 
     // Counters for each section
+    let pastDueCount = 0;
     let todayCount = 0;
     let tomorrowCount = 0;
     let thisWeekCount = 0;
@@ -867,7 +871,14 @@ function createContentUpcoming(bodyContent, menu, event) {
             const dueDate = new Date(task.date);
             dueDate.setHours(0, 0, 0, 0); // Set time to the beginning of the day
 
-            if (dueDate.getTime() === today.getTime()) {
+            if (dueDate.getTime() < today.getTime()) {
+                // Task is past due
+                let li = document.createElement("li");
+                let button = addingTaskElement(task, menu);
+                li.appendChild(button);
+                ulPastDue.appendChild(li);
+                pastDueCount++;
+            } else if (dueDate.getTime() === today.getTime()) {
                 // Task is due today
                 let li = document.createElement("li");
                 let button = addingTaskElement(task, menu);
@@ -898,6 +909,7 @@ function createContentUpcoming(bodyContent, menu, event) {
     });
 
     // Add sections to the div
+    appendSection(div, "Past Due", ulPastDue, pastDueCount);
     appendSection(div, "Today", ulToday, todayCount);
     appendSection(div, "Tomorrow", ulTomorrow, tomorrowCount);
     appendSection(div, "This Week", ulThisWeek, thisWeekCount);
@@ -906,6 +918,7 @@ function createContentUpcoming(bodyContent, menu, event) {
     bodyContent.appendChild(div);
     updateTotal(menu, event);
 }
+
 function appendSection(container, title, list, total) {
     if (list.children.length > 0) {
         let section = document.createElement("div");
